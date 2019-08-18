@@ -50,8 +50,28 @@ class Ship {
     update() {
         let radians = anglePos / Math.PI * 180; //formula for radians
         if(isMoving) {
-            //TODO: define how velocityX and velocityY updates (this requires some trig) relative to the ship's speed
+            this.velocityX += Math.cos(radians) * this.speed;
+            this.velocityY += Math.sin(radians) * this.speed;
         }
+        
+        if(this.x < this.radius) {
+            this.x = width;
+        }
+        if(this.x > width) {
+            this.x = this.radius;
+        }
+        if(this.y < this.radius) {
+            this.x = height;
+        }
+        if(this.y > height) {
+            this.x = this.radius;
+        }
+        this.velocityX *= .9;
+        this.velocityY *= .9;
+
+        this.x -= this.velocityX;
+        this.Y -= this.velocityY;
+
     }
 }
 
