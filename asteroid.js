@@ -1,6 +1,7 @@
 let canvas;
 let ctx;
-let canvasWidth = 1000;
+let ship;
+let canvasWidth = 1400;
 let canvasHeight = 1000;
 let keys = [];
 
@@ -10,11 +11,13 @@ function setupCanvas() {
     canvas = document.getElementById("mainCanvas");
     ctx = canvas.getContext("2d");
 
-    canvas.canvasWidth = canvasWidth;
-    canvas.canvasHeight = canvasHeight;
+    canvas.width = this.canvasWidth;
+    canvas.height = this.canvasHeight;
     
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ship = new Ship();
 
     //possibly move listeners elsewhere
     document.body.addEventListener("keydown", function(e){
@@ -23,21 +26,20 @@ function setupCanvas() {
     document.body.addEventListener("keyup", function(e){
         keys[e.keyCode] = false;
     });
-    //draws the player's ship and enemies/projectiles
-    (function render() {
 
-    })();
+    //draws the player's ship and enemies/projectiles
+    render();
 }
 
 class Ship {
-    constructor(width, height) {
+    constructor() {
         this.visible = true;
 
-        this.x = width / 2;
-        this.y = height / 2;
+        this.x = canvasWidth / 2;
+        this.y = canvasHeight / 2;
 
         this.isMoving = false;
-        this.speed = 1;
+        this.speed = 0.1;
         this.velocityX = 0;
         this.velocityY = 0;
         this.rotationSpeed = 0.1;
@@ -46,24 +48,29 @@ class Ship {
         this.anglePos = 0;
         this.strokeColor = "white";
     }
+
+    rotate(isClockwise) {
+        let clockwiseValue = isClockwise ? 1 : -1;
+        this.angle += this.rotationSpeed * clockwiseValue;
+    }
     
     update() {
-        let radians = anglePos / Math.PI * 180; //formula for radians
-        if(isMoving) {
+        let radians = this.anglePos / Math.PI * 180; //formula for radians
+        if(this.isMoving) {
             this.velocityX += Math.cos(radians) * this.speed;
             this.velocityY += Math.sin(radians) * this.speed;
         }
         
         if(this.x < this.radius) {
-            this.x = width;
+            this.x = canvas.width;
         }
-        if(this.x > width) {
+        if(this.x > canvas.width) {
             this.x = this.radius;
         }
         if(this.y < this.radius) {
-            this.x = height;
+            this.x = canvas.height;
         }
-        if(this.y > height) {
+        if(this.y > canvas.height) {
             this.x = this.radius;
         }
         this.velocityX *= .9;
@@ -71,8 +78,37 @@ class Ship {
 
         this.x -= this.velocityX;
         this.Y -= this.velocityY;
+    }
+    
+    draw() {
+        ctx.strokeStyle = this.strokeColor;
+        ctx.beginPath();
 
+        let vertexAngle = ((Math.pi * 2) / 3);
+        let radians = this.anglePos / Math.PI * 180;
+
+        for(let i = 0; i < 3; i++) {
+            ctx.lineTo(this.x - this.radius * Math.cos(vertexAngle * i + radians), 
+            this.y - this.radius * Math.sin(vertexAngle * i + radians));
+        }
+        ctx.closePath();
+        ctx.stroke();
     }
 }
 
-let ship = new Ship(canvasWidth, canvasHeight);
+
+function render() {
+    ship.isMoving = (keys[68]) //keycode for w
+
+    if(keys[68]) { //keycode for a
+        ship.rotate(true);
+    }
+    if(keys[65]) { //keycode for d
+        ship.rotate(false);
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ship.update();
+    ship.draw()
+    requestAnimationFrame(render);
+}
