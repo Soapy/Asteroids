@@ -46,7 +46,7 @@ class Ship {
         this.x = canvasWidth / 2;
         this.y = canvasHeight / 2;
         this.movingForward = false;
-        this.speed = 0.25;
+        this.speed = 0.2;
         this.velX = 0;
         this.velY = 0;
         this.rotateSpeed = 0.001;
@@ -115,7 +115,7 @@ class Bullet {
         this.angle = angle;
         this.height = 4;
         this.width = 4;
-        this.speed = 5;
+        this.speed = 6;
         this.velX = 0;
         this.velY = 0;
     }
@@ -137,7 +137,7 @@ class Asteroid {
         this.visible = true;
         this.x = x || Math.floor(Math.random() * canvasWidth);
         this.y = y || Math.floor(Math.random() * canvasHeight);
-        this.speed = 25;
+        this.speed = 5;
         this.radius = radius || 50;
         this.angle = Math.floor(Math.random() * 100);
         this.strokeColor = 'white';
