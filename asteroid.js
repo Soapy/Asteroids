@@ -7,7 +7,7 @@ let ship;
 let bullets = [];
 let asteroids = [];
 let score = 0;
-let lives = 5;
+let lives = 1000;
  
 document.addEventListener('DOMContentLoaded', setupCanvas);
  
